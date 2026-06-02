@@ -41,9 +41,7 @@ async def chat_websocket(websocket: WebSocket, conversacion_id: str):
             texto = texto.strip()
             if not texto:
                 continue
-
-            # Una sesion de BD por mensaje para reflejar siempre el estado
-            # mas reciente y evitar sesiones colgadas en conexiones largas.
+        
             db = SessionLocal()
             try:
                 caso_uso = construir_procesar_mensaje(db)
@@ -53,7 +51,6 @@ async def chat_websocket(websocket: WebSocket, conversacion_id: str):
             finally:
                 db.close()
 
-            # Difundimos ambos mensajes a todos los participantes.
             await notificador.notificar(conversacion_id, mensaje_cliente)
             await notificador.notificar(conversacion_id, mensaje_asistente)
 

@@ -5,8 +5,6 @@ from sqlalchemy.orm import Session
 from app.domain.entities.faq import FAQ
 from app.infrastructure.repositories.faq_repository_sql import FaqRepositorySQL
 
-# Catalogo inicial de preguntas frecuentes. Cubre los ejemplos pedidos en la
-# practica: estado de orden, metodos de pago, tiempos de envio y horarios.
 FAQS_INICIALES = [
     FAQ(
         id=str(uuid.uuid4()),
@@ -59,6 +57,17 @@ FAQS_INICIALES = [
         categoria="devoluciones",
         palabras_clave=["devolver", "devolucion", "cambio", "reembolso"],
     ),
+        FAQ(
+        id=str(uuid.uuid4()),
+        pregunta="Amor",
+        respuesta=(
+            "Eres el peor amor que eh conocido tan perfecto que no te olvido piensa en mi ayudame "
+            "a odiarte has las cosas que hacen los cobardes no me trates bien ni sonrias mas pues "
+            "mi alma sigue sufriendo se un ex de verdad y tratame mal, ayudame con eso"
+        ),
+        categoria="devoluciones",
+        palabras_clave=["devolver", "devolucion", "cambio", "reembolso"],
+    )
 ]
 
 
