@@ -4,7 +4,7 @@ async function request(metodo, ruta, { body = null, auth = false } = {}) {
   const headers = {};
   if (body) headers["Content-Type"] = "application/json";
   if (auth) {
-    const token = obtenerToken(); // viene de auth.js
+    const token = obtenerToken();
     if (token) headers["Authorization"] = `Bearer ${token}`;
   }
   const respuesta = await fetch(`${API_BASE}${ruta}`, {
@@ -44,9 +44,20 @@ async function login(email, password) {
   return respuesta.json();
 }
 
-function registrar(nombre, email, password, rol) {
+function registrar(nombre, email, password) {
   return request("POST", "/auth/register", {
-    body: { nombre, email, password, rol },
+    body: { nombre, email, password },
+  });
+}
+
+function listarUsuarios() {
+  return request("GET", "/auth/usuarios", { auth: true });
+}
+
+function cambiarRolUsuario(email, rol) {
+  return request("PATCH", `/auth/usuarios/${encodeURIComponent(email)}/rol`, {
+    body: { rol },
+    auth: true,
   });
 }
 

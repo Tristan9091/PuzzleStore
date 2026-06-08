@@ -189,10 +189,52 @@ async function cambiarEstado(id, estado) {
   }
 }
 
+const ROLES = ["cliente", "operador", "admin"];
+
+async function cargarUsuarios() {
+  const tbody = document.getElementById("tabla-usuarios");
+  try {
+    const usuarios = await listarUsuarios();
+    tbody.innerHTML = usuarios
+      .map((u) => {
+        const esAdminPrincipal = u.email === "admin@gmail.com";
+        return `
+      <tr>
+        <td>${u.nombre}</td>
+        <td>${u.email}</td>
+        <td><span class="badge ${u.rol === "admin" ? "bg-success" : u.rol === "operador" ? "bg-info text-dark" : "bg-secondary"}">${u.rol}</span></td>
+        <td>
+          ${
+            esAdminPrincipal
+              ? `<span class="text-muted small">Admin principal</span>`
+              : `<select class="form-select form-select-sm" style="max-width:160px" onchange="cambiarRol('${u.email}', this.value)">
+                 ${ROLES.map((r) => `<option value="${r}" ${r === u.rol ? "selected" : ""}>${r}</option>`).join("")}
+               </select>`
+          }
+        </td>
+      </tr>`;
+      })
+      .join("");
+  } catch (e) {
+    tbody.innerHTML = `<tr><td colspan="4" class="text-danger text-center py-3">${e.message}</td></tr>`;
+  }
+}
+
+async function cambiarRol(email, rol) {
+  try {
+    await cambiarRolUsuario(email, rol);
+    cargarUsuarios();
+  } catch (e) {
+    alert("No se pudo cambiar el rol: " + e.message);
+    cargarUsuarios();
+  }
+}
+
 function conectarChatAdmin() {
   const WS_BASE = API_BASE.replace(/^http/, "ws");
   const socket = new WebSocket(`${WS_BASE}/ws/admin`);
   window._adminSocket = socket;
+
   socket.onmessage = (evento) => {
     const msg = JSON.parse(evento.data);
     if (msg.tipo === "escalamiento") {
@@ -234,4 +276,5 @@ function agregarEscalamiento(clienteId, contenido) {
 
 cargarProductos();
 cargarOrdenes();
+cargarUsuarios();
 conectarChatAdmin();
