@@ -2,10 +2,10 @@ from typing import List, Optional
 
 from sqlalchemy.orm import Session
 
-from backend.app.domain.entities.conversacion import Conversacion, EstadoConversacion
-from backend.app.domain.entities.mensaje_chat import MensajeChat, AutorMensaje
-from backend.app.domain.ports.conversacion_repository import ConversacionRepository
-from backend.app.infrastructure.database.models import ConversacionModel, MensajeChatModel
+from app.domain.entities.conversacion import Conversacion, EstadoConversacion
+from app.domain.entities.mensaje_chat import MensajeChat, AutorMensaje
+from app.domain.ports.conversacion_repository import ConversacionRepository
+from app.infrastructure.database.models import ConversacionModel, MensajeChatModel
 
 
 class ConversacionRepositorySQL(ConversacionRepository):

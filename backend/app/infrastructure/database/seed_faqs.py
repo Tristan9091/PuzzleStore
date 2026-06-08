@@ -2,8 +2,8 @@ import uuid
 
 from sqlalchemy.orm import Session
 
-from backend.app.domain.entities.faq import FAQ
-from backend.app.infrastructure.repositories.faq_repository_sql import FaqRepositorySQL
+from app.domain.entities.faq import FAQ
+from app.infrastructure.repositories.faq_repository_sql import FaqRepositorySQL
 
 FAQS_INICIALES = [
     FAQ(

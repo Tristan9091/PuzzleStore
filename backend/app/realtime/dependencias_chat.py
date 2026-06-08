@@ -1,16 +1,16 @@
 from sqlalchemy.orm import Session
 
-from backend.app.application.use_cases.chat_use_cases import (
+from app.application.use_cases.chat_use_cases import (
     IniciarConversacion,
     ObtenerHistorial,
     ProcesarMensajeCliente,
 )
-from backend.app.domain.ports.motor_respuestas import MotorRespuestas
-from backend.app.infrastructure.motor.motor_faq_simple import MotorFaqSimple
-from backend.app.infrastructure.repositories.conversacion_repository_sql import (
+from app.domain.ports.motor_respuestas import MotorRespuestas
+from app.infrastructure.motor.motor_faq_simple import MotorFaqSimple
+from app.infrastructure.repositories.conversacion_repository_sql import (
     ConversacionRepositorySQL,
 )
-from backend.app.infrastructure.repositories.faq_repository_sql import FaqRepositorySQL
+from app.infrastructure.repositories.faq_repository_sql import FaqRepositorySQL
 
 
 def construir_motor(db: Session) -> MotorRespuestas:

@@ -1,9 +1,9 @@
-from backend.app.domain.entities.conversacion import Conversacion
-from backend.app.domain.entities.faq import FAQ
-from backend.app.domain.entities.respuesta_asistente import RespuestaAsistente
-from backend.app.domain.ports.faq_repository import FaqRepository
-from backend.app.domain.ports.motor_respuestas import MotorRespuestas
-from backend.app.infrastructure.motor.texto import normalizar, tokenizar
+from app.domain.entities.conversacion import Conversacion
+from app.domain.entities.faq import FAQ
+from app.domain.entities.respuesta_asistente import RespuestaAsistente
+from app.domain.ports.faq_repository import FaqRepository
+from app.domain.ports.motor_respuestas import MotorRespuestas
+from app.infrastructure.motor.texto import normalizar, tokenizar
 
 
 class MotorFaqSimple(MotorRespuestas):

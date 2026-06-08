@@ -3,7 +3,7 @@ from datetime import datetime
 from enum import Enum
 from typing import List
 
-from backend.app.domain.entities.mensaje_chat import MensajeChat
+from app.domain.entities.mensaje_chat import MensajeChat
 
 
 class EstadoConversacion(str, Enum):

@@ -1,7 +1,7 @@
 import os
 import uuid
 from fastapi import APIRouter, UploadFile, File, HTTPException, Depends
-from backend.app.adapters.http.dependencies import require_admin
+from app.adapters.http.dependencies import require_admin
 
 imagen_router = APIRouter()
 

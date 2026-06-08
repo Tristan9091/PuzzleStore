@@ -3,9 +3,9 @@ from typing import List
 from sqlalchemy import or_
 from sqlalchemy.orm import Session
 
-from backend.app.domain.entities.faq import FAQ
-from backend.app.domain.ports.faq_repository import FaqRepository
-from backend.app.infrastructure.database.models import FaqModel
+from app.domain.entities.faq import FAQ
+from app.domain.ports.faq_repository import FaqRepository
+from app.infrastructure.database.models import FaqModel
 
 
 class FaqRepositorySQL(FaqRepository):

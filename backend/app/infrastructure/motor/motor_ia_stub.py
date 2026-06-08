@@ -1,6 +1,6 @@
-from backend.app.domain.entities.conversacion import Conversacion
-from backend.app.domain.entities.respuesta_asistente import RespuestaAsistente
-from backend.app.domain.ports.motor_respuestas import MotorRespuestas
+from app.domain.entities.conversacion import Conversacion
+from app.domain.entities.respuesta_asistente import RespuestaAsistente
+from app.domain.ports.motor_respuestas import MotorRespuestas
 
 
 class MotorIAStub(MotorRespuestas):

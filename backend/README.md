@@ -72,7 +72,7 @@ mysql+pymysql://root:root1234@127.0.0.1:3306/puzzlestore
 ```bash
 pip install -r ../requirements.txt
 cd backend
-uvicorn app.main:app --reload
+python3 -m uvicorn app.main:app --reload
 ```
 
 Queda en `http://127.0.0.1:8000`. Las tablas se crean solas al arrancar y se cargan
@@ -82,7 +82,7 @@ unas FAQs de ejemplo. La documentación interactiva está en `http://127.0.0.1:8
 
 ```bash
 cd frontend
-python -m http.server 5500
+python3 -m http.server 5500
 ```
 
 Abrir `http://127.0.0.1:5500/login.html`. Si `API_BASE` en `frontend/js/api.js` no

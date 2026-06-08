@@ -3,16 +3,16 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 import os
 from fastapi.middleware.cors import CORSMiddleware
-from backend.app.infrastructure.database.base import engine, SessionLocal
-from backend.app.infrastructure.database import models
-from backend.app.infrastructure.database.seed_faqs import sembrar_faqs
-from backend.app.adapters.http.producto_router import producto_router
-from backend.app.adapters.http.perfil_compra_router import perfil_compra_router
-from backend.app.adapters.http.orden_compra_router import orden_compra_router
-from backend.app.adapters.http.auth_router import router as auth_router
-from backend.app.adapters.http.chat_router import chat_router
-from backend.app.realtime.chat_socket import chat_socket_router
-from backend.app.adapters.http.imagen_router import imagen_router
+from app.infrastructure.database.base import engine, SessionLocal
+from app.infrastructure.database import models
+from app.infrastructure.database.seed_faqs import sembrar_faqs
+from app.adapters.http.producto_router import producto_router
+from app.adapters.http.perfil_compra_router import perfil_compra_router
+from app.adapters.http.orden_compra_router import orden_compra_router
+from app.adapters.http.auth_router import router as auth_router
+from app.adapters.http.chat_router import chat_router
+from app.realtime.chat_socket import chat_socket_router
+from app.adapters.http.imagen_router import imagen_router
 
 
 UPLOADS_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "uploads")

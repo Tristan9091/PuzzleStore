@@ -2,10 +2,10 @@ from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel, Field
 from typing import List, Optional
 from sqlalchemy.orm import Session
-from backend.app.adapters.http.dependencies import get_current_user, require_admin, require_operador_o_admin
-from backend.app.infrastructure.database.base import get_db
-from backend.app.infrastructure.repositories.producto_repository_sql import ProductoRepositorySQL
-from backend.app.application.use_cases.producto_use_cases import (
+from app.adapters.http.dependencies import get_current_user, require_admin, require_operador_o_admin
+from app.infrastructure.database.base import get_db
+from app.infrastructure.repositories.producto_repository_sql import ProductoRepositorySQL
+from app.application.use_cases.producto_use_cases import (
     CrearProductos, ObtenerProducto, ListarProductos,
     ActualizarProducto, EliminarProducto,
     BuscarProductosPorNombre, FiltrarProductosPorPrecio

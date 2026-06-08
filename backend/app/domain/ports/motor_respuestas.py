@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
-from backend.app.domain.entities.conversacion import Conversacion
-from backend.app.domain.entities.respuesta_asistente import RespuestaAsistente
+from app.domain.entities.conversacion import Conversacion
+from app.domain.entities.respuesta_asistente import RespuestaAsistente
 
 
 class MotorRespuestas(ABC):

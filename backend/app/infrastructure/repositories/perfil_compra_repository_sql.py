@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
-from backend.app.domain.ports.perfil_compra_repository import PerfilCompraRepository
-from backend.app.domain.entities.perfil_compra import PerfilCompra
-from backend.app.infrastructure.database.models import PerfilCompraModel
+from app.domain.ports.perfil_compra_repository import PerfilCompraRepository
+from app.domain.entities.perfil_compra import PerfilCompra
+from app.infrastructure.database.models import PerfilCompraModel
 from typing import Optional
 
 class PerfilCompraRepositorySQL(PerfilCompraRepository):

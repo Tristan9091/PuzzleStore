@@ -1,5 +1,5 @@
 import uuid
-from backend.app.domain.entities.perfil_compra import PerfilCompra
+from app.domain.entities.perfil_compra import PerfilCompra
 
 class CrearPerfilCompra:
     def __init__(self, perfil_compra_repository):

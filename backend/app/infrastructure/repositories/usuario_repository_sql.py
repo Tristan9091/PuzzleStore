@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
-from backend.app.domain.ports.usuario_repository import UsuarioRepository
-from backend.app.domain.entities.usuario import Usuario
-from backend.app.infrastructure.database.models import UsuarioModel
+from app.domain.ports.usuario_repository import UsuarioRepository
+from app.domain.entities.usuario import Usuario
+from app.infrastructure.database.models import UsuarioModel
 from typing import Optional
 
 class UsuarioRepositorySQL(UsuarioRepository):

@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import Optional
-from backend.app.domain.entities.perfil_compra import PerfilCompra
+from app.domain.entities.perfil_compra import PerfilCompra
 
 class PerfilCompraRepository(ABC):
     @abstractmethod

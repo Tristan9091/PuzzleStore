@@ -1,7 +1,7 @@
 from sqlalchemy import Column, String, Float, Integer, DateTime, ForeignKey, Text, JSON
 from sqlalchemy.orm import relationship
 from datetime import datetime
-from backend.app.infrastructure.database.base import Base
+from app.infrastructure.database.base import Base
 
 class ProductoModel(Base):
     __tablename__ = "productos"

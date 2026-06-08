@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import List, Optional
 
-from backend.app.domain.entities.conversacion import Conversacion
-from backend.app.domain.entities.mensaje_chat import MensajeChat
+from app.domain.entities.conversacion import Conversacion
+from app.domain.entities.mensaje_chat import MensajeChat
 
 
 class ConversacionRepository(ABC):

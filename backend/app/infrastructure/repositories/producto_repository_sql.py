@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
-from backend.app.domain.ports.producto_repository import ProductoRepository
-from backend.app.domain.entities.producto import Producto
-from backend.app.infrastructure.database.models import ProductoModel
+from app.domain.ports.producto_repository import ProductoRepository
+from app.domain.entities.producto import Producto
+from app.infrastructure.database.models import ProductoModel
 from typing import List, Optional
 
 class ProductoRepositorySQL(ProductoRepository):

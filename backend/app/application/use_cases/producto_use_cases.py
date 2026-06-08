@@ -1,5 +1,5 @@
 import uuid
-from backend.app.domain.entities.producto import Producto
+from app.domain.entities.producto import Producto
 
 class CrearProductos:
     def __init__(self, producto_repository):

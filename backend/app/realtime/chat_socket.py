@@ -1,13 +1,13 @@
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 
-from backend.app.domain.entities.mensaje_chat import MensajeChat, AutorMensaje
-from backend.app.infrastructure.database.base import SessionLocal
-from backend.app.realtime.connection_manager import manager
-from backend.app.realtime.dependencias_chat import (
+from app.domain.entities.mensaje_chat import MensajeChat, AutorMensaje
+from app.infrastructure.database.base import SessionLocal
+from app.realtime.connection_manager import manager
+from app.realtime.dependencias_chat import (
     construir_obtener_historial,
     construir_procesar_mensaje,
 )
-from backend.app.realtime.websocket_notificador import WebSocketNotificador
+from app.realtime.websocket_notificador import WebSocketNotificador
 
 chat_socket_router = APIRouter()
 

@@ -1,6 +1,6 @@
-from backend.app.domain.entities.mensaje_chat import MensajeChat
-from backend.app.domain.ports.notificador_tiempo_real import NotificadorTiempoReal
-from backend.app.realtime.connection_manager import ConnectionManager
+from app.domain.entities.mensaje_chat import MensajeChat
+from app.domain.ports.notificador_tiempo_real import NotificadorTiempoReal
+from app.realtime.connection_manager import ConnectionManager
 
 
 class WebSocketNotificador(NotificadorTiempoReal):

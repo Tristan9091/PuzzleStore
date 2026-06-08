@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List
 
-from backend.app.domain.entities.faq import FAQ
+from app.domain.entities.faq import FAQ
 
 
 class FaqRepository(ABC):

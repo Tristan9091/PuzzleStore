@@ -2,10 +2,10 @@ from fastapi import APIRouter, HTTPException, Depends, status
 from pydantic import BaseModel, EmailStr
 from typing import List, Optional
 from sqlalchemy.orm import Session
-from backend.app.infrastructure.database.base import get_db
-from backend.app.adapters.http.dependencies import get_current_user
-from backend.app.infrastructure.repositories.perfil_compra_repository_sql import PerfilCompraRepositorySQL
-from backend.app.application.use_cases.perfil_compra_use_cases import (
+from app.infrastructure.database.base import get_db
+from app.adapters.http.dependencies import get_current_user
+from app.infrastructure.repositories.perfil_compra_repository_sql import PerfilCompraRepositorySQL
+from app.application.use_cases.perfil_compra_use_cases import (
     CrearPerfilCompra, ObtenerPerfilCompra, ActualizarPerfilCompra
 )
 

@@ -1,10 +1,10 @@
 import uuid
 
-from backend.app.domain.entities.conversacion import Conversacion, EstadoConversacion
-from backend.app.domain.entities.mensaje_chat import MensajeChat, AutorMensaje
-from backend.app.domain.entities.respuesta_asistente import RespuestaAsistente
-from backend.app.domain.ports.conversacion_repository import ConversacionRepository
-from backend.app.domain.ports.motor_respuestas import MotorRespuestas
+from app.domain.entities.conversacion import Conversacion, EstadoConversacion
+from app.domain.entities.mensaje_chat import MensajeChat, AutorMensaje
+from app.domain.entities.respuesta_asistente import RespuestaAsistente
+from app.domain.ports.conversacion_repository import ConversacionRepository
+from app.domain.ports.motor_respuestas import MotorRespuestas
 
 UMBRAL_ESCALAMIENTO = 0.35
 

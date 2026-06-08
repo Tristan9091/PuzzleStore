@@ -4,11 +4,11 @@ from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
-from backend.app.adapters.http.dependencies import require_admin
-from backend.app.domain.entities.faq import FAQ
-from backend.app.infrastructure.database.base import get_db
-from backend.app.infrastructure.repositories.faq_repository_sql import FaqRepositorySQL
-from backend.app.realtime.dependencias_chat import (
+from app.adapters.http.dependencies import require_admin
+from app.domain.entities.faq import FAQ
+from app.infrastructure.database.base import get_db
+from app.infrastructure.repositories.faq_repository_sql import FaqRepositorySQL
+from app.realtime.dependencias_chat import (
     construir_iniciar_conversacion,
     construir_obtener_historial,
 )
