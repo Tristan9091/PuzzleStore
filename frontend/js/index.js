@@ -75,7 +75,7 @@ function agregarAlCarrito(productoId) {
   const existente = carrito.find((item) => item.id === productoId);
 
   if (existente) {
-    if (existente.cantidad >= producto.stock) {
+    if (existente.cantidad >= Number(producto.stock)) {
       alert("No hay más stock disponible de este producto");
       return;
     }
