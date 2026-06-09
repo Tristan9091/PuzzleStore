@@ -1,12 +1,8 @@
-# PuzzleStore — E-commerce Fullstack
+# PuzzleStore — E-commerce
 
 **Programación Web 1 · Prof. Kegovc**
 
-Tienda en línea de cubos, rompecabezas y puzzles. El proyecto integra las cuatro
-prácticas del curso en un solo sistema fullstack: un backend en FastAPI con
-Arquitectura Hexagonal (P1), autenticación y autorización con JWT (P2), un chat
-cliente–asistente en tiempo real con WebSockets (P3) y el frontend completo del
-e-commerce con su panel administrativo (P4).
+Tienda en línea de cubos, rompecabezas y puzzles. El proyecto integra las cuatro prácticas del curso en un solo sistema fullstack: un backend en FastAPI con Arquitectura Hexagonal (P1), autenticación y autorización con JWT (P2), un chat cliente–asistente en tiempo real con WebSockets y atención humana en viv(P3) y el frontend completo del e-commerce con su panel administrativo (P4).
 
 ---
 
@@ -17,14 +13,9 @@ project/
 ├── backend/                    # API en FastAPI (Arquitectura Hexagonal)
 │   ├── app/
 │   │   ├── domain/             # Entidades y puertos (contratos)
-│   │   │   ├── entities/       # Producto, PerfilCompra, OrdenCompra, Usuario, MensajeChat, PreguntaFrecuente
-│   │   │   └── ports/          # Interfaces de repositorios y del motor de respuestas
 │   │   ├── application/        # Casos de uso (lógica de negocio)
-│   │   ├── infrastructure/     # Implementaciones concretas
-│   │   │   ├── database/       # Conexión y modelos SQLAlchemy
-│   │   │   ├── repositories/   # Repositorios SQL (cumplen los puertos)
-│   │   │   └── motores/        # Motor de FAQ (cumple el puerto del asistente)
-│   │   ├── adapters/http/      # Routers (productos, auth, órdenes, perfiles, imágenes)
+│   │   ├── infrastructure/     # Repositorios SQLAlchemy, BD y motor de FAQ
+│   │   ├── adapters/http/      # Routers (productos, auth, órdenes, perfiles, imágenes, chat)
 │   │   ├── realtime/           # WebSockets del chat y gestor de conexiones
 │   │   ├── security/           # Generación y validación de JWT
 │   │   └── main.py             # Punto de entrada (CORS, estáticos, routers)
@@ -33,7 +24,7 @@ project/
 │   ├── login.html              # Login / registro
 │   ├── index.html              # Catálogo + carrito + chat
 │   ├── checkout.html           # Resumen, compra, historial + chat
-│   ├── admin.html              # Backoffice (productos, órdenes, chat del agente)
+│   ├── admin.html              # Backoffice (productos, órdenes, usuarios, chat de agente)
 │   ├── css/styles.css
 │   └── js/
 │       ├── auth.js             # Sesión y token JWT
@@ -75,8 +66,9 @@ cd backend
 python3 -m uvicorn app.main:app --reload
 ```
 
-Queda en `http://127.0.0.1:8000`. Las tablas se crean solas al arrancar y se cargan
-unas FAQs de ejemplo. La documentación interactiva está en `http://127.0.0.1:8000/docs`.
+Queda en `http://127.0.0.1:8000`. Las tablas se crean solas al arrancar y, si la tabla
+de FAQs está vacía, se cargan unas preguntas frecuentes de ejemplo. La documentación
+interactiva está en `http://127.0.0.1:8000/docs`.
 
 **3. Frontend.** Servirlo con un servidor estático desde la carpeta `frontend/`:
 
@@ -85,149 +77,116 @@ cd frontend
 python3 -m http.server 5500
 ```
 
-Abrir `http://127.0.0.1:5500/login.html`. Si `API_BASE` en `frontend/js/api.js` no
-apunta a `http://127.0.0.1:8000`, ajustarlo.
+Abrir `http://127.0.0.1:5500/login.html`. Importante: el frontend debe abrirse a través
+del servidor (no con doble clic en el archivo), o el navegador bloquea las peticiones y
+los WebSockets.
 
-**Roles disponibles:** al registrarse se puede elegir entre **cliente** (entra a la
-tienda) y **administrador** (entra al backoffice). El sistema contempla además el rol
-**operador** a nivel de backend.
+---
+
+## Roles y primer acceso
+
+El sistema maneja tres roles: **cliente**, **operador** y **admin**.
+
+- Al registrarse, el usuario **no elige rol**: nace siempre como `cliente`. La única excepción es el correo `admin@gmail.com`, que nace como `admin`. Esto evita que cualquiera se registre con permisos de administrador.
+- El administrador, desde la pestaña **Usuarios** del backoffice, puede promover a otras cuentas a `operador` o `admin`.
+- Como el rol viaja dentro del token JWT, los cambios de rol aplican la **próxima vez que el usuario inicia sesión**.
+
+Permisos por rol:
+
+- **cliente:** catálogo, carrito, compra, historial y chat.
+- **operador:** entra al backoffice; puede editar productos, gestionar órdenes y atenderel chat escalado. No puede crear/eliminar productos ni gestionar usuarios.
+- **admin:** acceso total al backoffice, incluida la gestión de usuarios.
 
 ---
 
 ## Práctica 1 — E-commerce Hexagonal
 
-**Objetivo:** construir un backend de e-commerce desacoplado y organizado siguiendo
-Arquitectura Hexagonal.
+**Objetivo:** un backend de e-commerce desacoplado y organizado siguiendo Arquitectura
+Hexagonal.
 
-**Cómo se cumple.** El backend separa responsabilidades en cuatro capas:
-
-- **Dominio** (`domain/`): las entidades del negocio (`Producto`, `PerfilCompra`,
-  `OrdenCompra` con sus `OrdenItem`) como clases puras, sin dependencias de framework,
-  y los **puertos** (`ports/`), que son las interfaces que el dominio espera que alguien
-  implemente.
-- **Aplicación** (`application/use_cases/`): la lógica de negocio en casos de uso
-  (crear producto, crear orden, listar órdenes por perfil, cancelar orden, etc.). Cada
-  caso de uso recibe un repositorio por inyección de dependencias, así que no sabe nada
-  de SQL.
-- **Infraestructura** (`infrastructure/`): las implementaciones concretas con
-  SQLAlchemy/MySQL. Los repositorios SQL cumplen los puertos del dominio.
-- **Adaptadores** (`adapters/http/`): los routers de FastAPI que exponen los endpoints
-  y traducen las peticiones HTTP a llamadas a los casos de uso.
-
-**Entidades y flujo.** Las tres entidades mínimas están presentes: productos, perfiles
-de compra y órdenes de compra. El flujo de una orden es: existe un producto en el
-catálogo → el cliente tiene un perfil de compra → se crea una orden que referencia ese
-perfil, lista sus items (con precio y cantidad) y calcula el total → la orden tiene un
-estado que evoluciona (`pendiente`, `pagada`, `enviada`, `entregada`, `cancelada`).
-
-**Endpoints principales:** CRUD de productos (`/productos`), perfiles (`/perfiles`) y
-órdenes (`/ordenes`, crear/consultar/listar por perfil/cancelar).
-
-**Para la defensa:** el valor de esta arquitectura es que el dominio no depende de
-nada externo. Se podría cambiar MySQL por otra base de datos reescribiendo solo los
-repositorios, sin tocar los casos de uso ni las entidades, porque ambos se comunican a
-través de los puertos.
+El backend separa responsabilidades en capas: **dominio** (entidades como `Producto`,`PerfilCompra`, `OrdenCompra`, y los puertos/interfaces)**aplicación** (casos de uso con la lógica de negocio), **infraestructura** (repositorios SQLAlchemy/MySQL que cumplen los puertos) y **adaptadores** (routers de FastAPI). Las tres entidades mínimas están presentes y el flujo de una orden es: producto en catálogo → perfil de compra → orden que referencia el perfil, lista sus items y calcula el total → estado que evoluciona
+(`pendiente`, `pagada`, `enviada`, `entregada`, `cancelada`).
 
 ---
 
 ## Práctica 2 — Autenticación y Autorización (JWT)
 
-**Objetivo:** proteger el backend con login, validación de usuarios y control de
-acceso por roles, integrándolo a la arquitectura existente. Se eligió la **Opción 2
-(OAuth 2 / JWT, hasta 100%)**.
+**Objetivo:** proteger el backend con login, validación y control de acceso por roles.
+Se eligió la **Opción 2 (OAuth 2 / JWT, hasta 100%)**.
 
-**Cómo se cumple.**
+- **Registro** (`POST /auth/register`): crea el usuario con la contraseña cifrada con
+  bcrypt. El rol lo decide el backend (no el usuario).
+- **Login** (`POST /auth/login`): usa `OAuth2PasswordRequestForm`; devuelve un **access
+  token** y un **refresh token** (JWT con python-jose) que llevan el correo y el rol.
+- **Refresh** (`POST /auth/refresh`): renueva el access token sin pedir credenciales.
+- **Protección de rutas** (`dependencies.py`): dependencias reutilizables que FastAPI
+  inyecta: `get_current_user`, `require_admin` y `require_operador_o_admin`.
+- **Gestión de usuarios** (solo admin): `GET /auth/usuarios` y
+  `PATCH /auth/usuarios/{email}/rol` para listar y cambiar roles.
 
-- **Registro** (`POST /auth/register`): crea un usuario con su rol (`cliente`,
-  `admin` u `operador`). La contraseña se guarda cifrada con bcrypt (passlib).
-- **Login** (`POST /auth/login`): usa el estándar `OAuth2PasswordRequestForm` de
-  FastAPI. Si las credenciales son correctas, devuelve un **access token** y un
-  **refresh token** (JWT firmados con python-jose). Dentro del token viajan el correo
-  (`sub`) y el `rol`.
-- **Refresh** (`POST /auth/refresh`): permite obtener un nuevo access token a partir
-  del refresh token, sin volver a pedir credenciales.
-- **Protección de rutas** (`adapters/http/dependencies.py`): se implementan
-  dependencias reutilizables que FastAPI inyecta en los endpoints:
-  - `get_current_user`: valida el token y devuelve el usuario; rechaza si es inválido o
-    expiró.
-  - `require_admin`: solo deja pasar al rol `admin` (crear/eliminar productos, etc.).
-  - `require_operador_o_admin`: deja pasar a `admin` u `operador` (editar productos,
-    gestionar órdenes).
-
-**Control de acceso aplicado.** El catálogo es público (cualquiera puede listar
-productos), pero crear, editar o eliminar productos, gestionar órdenes y subir imágenes
-requieren los roles adecuados. El frontend complementa esto redirigiendo a cada usuario
-según su rol y mandando el token en el header `Authorization: Bearer ...`.
+El catálogo es público, pero crear/editar/eliminar productos, gestionar órdenes, subir
+imágenes y administrar usuarios exigen el rol adecuado. El frontend manda el token en el
+header `Authorization: Bearer ...` y redirige según el rol.
 
 ---
 
-## Práctica 3 — Chat Cliente-Asistente con WebSockets
+## Práctica 3 — Chat en tiempo real con WebSockets y atención humana
 
-**Objetivo:** comunicación en tiempo real con WebSockets y un sistema de respuestas
-automáticas a preguntas frecuentes, diseñado para poder evolucionar a IA.
+**Objetivo:** comunicación en tiempo real con respuestas automáticas a preguntas
+frecuentes, escalable a IA, con la posibilidad de que un humano intervenga.
 
-**Cómo se cumple.**
+**Flujo completo:**
 
-- **WebSockets** (`realtime/`): hay dos canales. `/ws/chat/{cliente_id}` para el
-  cliente y `/ws/admin` para los agentes. Un `ConnectionManager` lleva el registro de
-  las conexiones activas y permite enviar mensajes a un cliente específico o difundir a
-  todos los administradores.
-- **Respuestas automáticas (FAQ):** cuando llega un mensaje del cliente, el caso de uso
-  `ProcesarMensajeCliente` consulta el **motor de respuestas**. El motor incluido
-  (`MotorFaqSimple`) normaliza el texto (minúsculas y sin acentos) y puntúa cada FAQ
-  según cuántas de sus palabras clave aparecen en el mensaje; devuelve la mejor
-  coincidencia o `None`.
-- **Escalamiento:** si el motor no encuentra respuesta (`None`), el mensaje se **escala**
-  en vivo a todos los administradores conectados, y al cliente se le avisa que un agente
-  lo atenderá. El agente responde desde el panel y el mensaje llega al cliente correcto.
+1. El cliente abre el chat: se crea una conversación (`POST /chat/conversaciones`) y se
+   conecta por WebSocket a `/ws/chat/{conversacion_id}`.
+2. Cada mensaje pasa por el **motor de respuestas** (`MotorFaqSimple`), que normaliza el
+   texto y puntúa las FAQs por coincidencia de palabras clave.
+3. Si encuentra una FAQ con confianza suficiente, el **bot responde automáticamente**.
+4. Si no, el bot avisa al cliente que lo contactará un agente y la conversación se marca
+   como **escalada**; ese aviso se difunde a los agentes conectados al canal `/ws/staff`.
+5. Un **admin u operador** ve el mensaje en el panel y responde en vivo; su respuesta
+   llega al cliente etiquetada como **agente**.
 
-**Diseño desacoplado y escalable.** La clave de esta práctica es el puerto
-`MotorRespuestas` (`domain/ports/motor_respuestas.py`): es una interfaz que solo define
-"recibe un texto, devuelve una respuesta o nada". El `MotorFaqSimple` es una
-implementación, pero podría reemplazarse por un motor basado en **embeddings, RAG o un
-LLM** sin tocar el WebSocket ni el caso de uso, porque todos dependen del puerto y no de
-la implementación concreta.
+**Diseño desacoplado y escalable.** El motor se usa a través del puerto
+`MotorRespuestas`. La implementación actual es por palabras clave, pero podría
+reemplazarse por **embeddings, RAG o un LLM** sin tocar el WebSocket ni los casos de uso,
+porque todos dependen del puerto y no de la implementación concreta.
 
 ---
 
 ## Práctica 4 — Frontend E-commerce y Backoffice Administrativo
 
-**Objetivo:** desarrollar el frontend completo integrando las tres prácticas
-anteriores, con operaciones reales de compra, administración y comunicación.
+**Objetivo:** el frontend completo integrando las tres prácticas anteriores.
 
-**Cómo se cumple.** El frontend está hecho en HTML, CSS y JavaScript con Bootstrap por
-CDN, con la lógica separada por responsabilidades: `auth.js` (sesión/token), `api.js`
-(consumo de la API), y un archivo por página. El estado del carrito se mantiene en
-`localStorage` para sobrevivir el cambio entre el catálogo y el checkout.
+Hecho en HTML, CSS y JavaScript con Bootstrap por CDN, con la lógica separada por
+responsabilidades: `auth.js` (sesión/token), `api.js` (consumo de la API) y un archivo por
+página. El carrito se mantiene en `localStorage` para sobrevivir el cambio entre el
+catálogo y el checkout.
 
-- **Cliente:** catálogo con búsqueda, carrito, checkout con flujo completo de compra e
-  historial de órdenes (con cancelación), todo integrado con la autenticación (login y
-  token) y con la sección de chat en tiempo real.
-- **Administrador (Backoffice):** CRUD de productos, gestión de órdenes con cambio de
-  estado, y un panel de chat donde el agente responde en vivo las conversaciones
-  escaladas.
+- **Cliente:** catálogo con búsqueda, carrito con control de stock, checkout con flujo
+  completo de compra, historial de órdenes (con cancelación) y la sección de chat.
+- **Administrador / operador (Backoffice):** gestión de productos, gestión de órdenes con
+  cambio de estado, gestión de usuarios (solo admin) y panel de chat para atender las
+  conversaciones escaladas.
 
-**Manejo de imágenes (`multipart/form-data`).** Para cumplir este requisito se agregó
-al backend el endpoint `POST /productos/upload-imagen`, que recibe el archivo como
-`multipart/form-data`, lo valida (extensión, tipo MIME y tamaño máximo de 5 MB), lo
-guarda físicamente en `backend/uploads/` con un nombre único y devuelve su URL. Esa URL
-se persiste en el producto y se sirve como archivo estático en `/uploads`. En el
-formulario del admin, la imagen se sube primero y luego se guarda el producto con la URL
-resultante.
+**Manejo de imágenes (`multipart/form-data`).** El endpoint `POST /productos/upload-imagen`
+recibe el archivo como `multipart/form-data`, lo valida (extensión, tipo MIME y tamaño
+máximo de 5 MB), lo guarda físicamente en `backend/uploads/` con un nombre único y devuelve
+su URL. Esa URL se persiste en el producto y se sirve como archivo estático en `/uploads`.
+En el formulario del admin, la imagen se sube primero y luego se guarda el producto con la
+URL resultante.
 
-**Ajustes al backend para esta práctica:** se habilitó **CORS** (para que el navegador
-pueda consumir la API), se montó la carpeta de imágenes estáticas, se agregó el endpoint
-de subida de imágenes, y se añadieron dos endpoints para el backoffice: `GET /ordenes`
-(listar todas las órdenes) y `PATCH /ordenes/{id}/estado` (cambiar el estado),
-respetando la misma Arquitectura Hexagonal (puerto → repositorio → caso de uso → router).
+**Ajustes al backend para esta práctica:** se habilitó **CORS**, se montó la carpeta de
+imágenes estáticas, se agregó la subida de imágenes, los endpoints de backoffice para
+órdenes (`GET /ordenes` y `PATCH /ordenes/{id}/estado`), la gestión de usuarios por rol y
+el canal de chat para agentes (`/ws/staff`), todo respetando la Arquitectura Hexagonal
+(puerto → repositorio → caso de uso → router).
 
 ---
 
 ## Notas finales
 
-- El WebSocket del chat no va autenticado (así está diseñado el backend de la P3); es
-  una mejora futura posible.
+- Los WebSockets del chat no van autenticados (consistente con el diseño de la P3); es una mejora futura posible.
 - Bootstrap se carga por CDN, por lo que se requiere internet al ejecutar el frontend.
-- La relación entre el usuario autenticado y su perfil de compra se mantiene desde el
-  frontend (se crea el perfil en la primera compra y se reutiliza su id), ya que el
-  backend las maneja como entidades independientes.
+- La relación entre el usuario autenticado y su perfil de compra se mantiene desde el frontend (se crea el perfil en la primera compra y se reutiliza su id), ya que el backend las maneja como entidades independientes.
+- Las FAQs de fábrica solo se siembran cuando la tabla está vacía; para cambiarlas hay que vaciar la tabla `faqs` y reiniciar el backend.
