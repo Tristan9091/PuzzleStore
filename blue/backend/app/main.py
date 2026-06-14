@@ -52,13 +52,13 @@ app.include_router(imagen_router, tags=["Imágenes"])
 _static_dir = os.path.join(os.path.dirname(__file__), "realtime", "static")
 app.mount("/static", StaticFiles(directory=_static_dir), name="static")
 
-
-@app.get("/")
-def root():
-    return {"message": "Bienvenido a PuzzleStore API"}
-
-
 @app.get("/chat-demo")
 def chat_demo():
     """Pagina de prueba del chat en tiempo real."""
     return FileResponse(os.path.join(_static_dir, "chat.html"))
+
+FRONTEND_DIR = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.dirname(__file__))),
+    "frontend",
+)
+app.mount("/", StaticFiles(directory=FRONTEND_DIR, html=True), name="frontend")

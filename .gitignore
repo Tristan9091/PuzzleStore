@@ -1,0 +1,19 @@
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+venv/
+.venv/
+
+# Entorno
+.env
+
+# Uploads generados en runtime (las imágenes se suben desde el admin)
+blue/backend/uploads/*
+green/backend/uploads/*
+
+# VS Code (config personal)
+.vscode/

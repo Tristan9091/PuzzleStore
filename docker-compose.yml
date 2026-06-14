@@ -1,0 +1,47 @@
+services:
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root1234
+      MYSQL_DATABASE: puzzlestore
+    volumes:
+      - datos_mysql:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-proot1234"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  blue:
+    build: ./blue
+    environment:
+      DATABASE_URL: "mysql+pymysql://root:root1234@db:3306/puzzlestore"
+    volumes:
+      - uploads_compartidos:/app/backend/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+
+  green:
+    build: ./green
+    environment:
+      DATABASE_URL: "mysql+pymysql://root:root1234@db:3306/puzzlestore"
+    volumes:
+      - uploads_compartidos:/app/backend/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - blue
+      - green
+
+volumes:
+  datos_mysql:
+  uploads_compartidos:
