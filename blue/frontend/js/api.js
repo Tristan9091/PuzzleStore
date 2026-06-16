@@ -29,7 +29,7 @@ async function request(metodo, ruta, { body = null, auth = false } = {}) {
 }
 
 function urlImagen(ruta) {
-  if (!ruta) return "https://placehold.co/400x300?text=Sin+imagen";
+  if (!ruta) return `${API_BASE}/img/default.png`;
   if (ruta.startsWith("http")) return ruta;
   return `${API_BASE}${ruta}`;
 }
